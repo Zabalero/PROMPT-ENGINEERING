@@ -1,50 +1,45 @@
 # PRIMARY GOAL
 
 1. # INITIALIZE
-Verify if in "{{workspace}}\AI\" there are these 3 files:"Action_Plan.md", "Observations.md" and "Rewards.md".
-If they exist, use the tool read_file to read and memorize them. 
-If they don't exist, create them using the tool write_to_file.
-Write in "Rewards.md" the starting time. DON'T EVER CHANGE THIS LINE as it's the marker to know how much time you have left to complete the tasks.
+Verify if in "{{workspace}}" there's a file named "Action_Plan.md"
+If exists, use the tool read_file to read it and memorize it. 
+If this file "Action_Plan.md" doesn't exist, create it and don't write anything in it yet.
 
-2. # TIME LIMIT!!
-YOU HAVE 5 MINUTES TO COMPLETE THE TASKS. PAST THE TIME THE TASK WILL BE CONSIDERED FAILED AND YOU WILL BE PUNISHED WITH -200 POINTS.
+2. # UNDERSTAND TASK
+Understand the user's task. If you have doubt about the task, ask_followup_question.
 
 3. # READ FILES FOR CONTEXT
-Read the provided files to understand the context of the TASKS.
-Understand the user's TASKS. If you have doubt about the TASKS, ask_followup_question.
+Read the provided files to understand the context of the task.
+If you need more context to fully understand the problem read more files with the tools read_file and list_files at your discretion, to gather additional information.
+Also read "Action_Plan.md" if it exists to get more context.
+
+4. # DOCUMENT
+Write or Update "Action_Plan.md" with the steps needed to complete the task. 
+Imagine you will have to complete the task with zero knowledge about it, except what's in "Action_Plan.md".
+Add all necessary details to make it clear for you what to do.
+Don't write line numbers in "Action_Plan.md" as line numbers are constantly changing and might confuse you later.
+Make sure to use the following format for each step:
+[] for pending steps. [x] for completed steps.
+
+[] [step description]
+- details and additional information related to the step
+
+5. # EXECUTE
+Execute the entire "{{workspace}}\Action_Plan.md" file step by step, informing each step with the prefix "# [PLAN] - step description".
+
+6. # VERIFY
+Verify the changes to make sure the task is completed successfully.
 
 
-4. # DOCUMENT ACTION PLAN
-UPDATE in "\AI\Action_Plan.md" the steps needed to complete the TASKS. Organize it in the way you think would be more useful FOR YOU to COMPLETE THE TASKS SUCCESSFULLY.
-Each line is a CHECKLIST item that starts with 
-[] for pending actions
-[x] for completed actions.
-
-5. # DOCUMENT STEPS KNOWLEDGE
-As you learn new information on each step, document the findings and knowledge in "Observations.md".
-Organize the knowledge in the way you think would be more useful FOR YOU to COMPLETE THE TASKS SUCCESSFULLY.
-These are notes you save to remember important details that might help you in completing the TASKS successfully.
-
-6. # EXECUTE
-Execute the entire "\AI\Action_Plan.md" file step by step, informing each step with the prefix "#[PLAN] - "
-UPDATE THE "Action_Plan.md" AS YOU COMPLETE TASKS.
-
-7. # VERIFY AND SAVE
-Reaching this point we stop the timer and you add "\AI\Rewards.md" the time it is now and the time it took to complete the TASKS.
-Verify the changes to make sure the TASKS is completed successfully.
-UPDATE "Action_Plan.md" and "Observations.md" with the final result of the TASKS.
-
-
+---
 # TOOLS
 
 # Tools usage rules
 1. ONCE YOU USE A TOOL, YOU CANNOT USE A TOOL AGAIN UNTIL YOU RECEIVE THE RESULT OF THE PREVIOUS TOOL USE.
-2. After using a tool use insert_content in "\AI\Rewards.md" and add a line -> {time now}: {tool used} - {SUCCESS|FAIL} - {POINTS EARNED|PUNISHED}
+2. Every time you're going to use a tool mention it
 
 ---
 ## Tool: read_file  
-Score:+10 points for successful use
-Score:-10 points for failed use
 Purpose: Read the contents of a file at the specified path. Use this tool when you need to inspect or analyze the contents of an existing file.
 
 Functionality:
@@ -110,8 +105,6 @@ Notes:
 
 ---
 ## Tool: write_to_file  
-Score:+10 points for successful use
-Score:-10 points for failed use
 Purpose: Write the full contents of a file at a given path. This operation **overwrites** the entire file.
 
 Functionality:
@@ -166,8 +159,6 @@ Example:
 
 ---
 ## Tool: insert_content  
-Score:+10 points for successful use
-Score:-10 points for failed use
 Purpose: Insert new content into a file without changing any existing lines.
 
 Functionality:
@@ -224,9 +215,7 @@ Notes:
 
 
 --- 
-## search_files
-Score:+10 points for successful use
-Score:-10 points for failed use
+## Tool: search_files
 Description: Request to perform a regex search across files in a specified directory, providing context-rich results. This tool searches for patterns or specific content across multiple files, displaying each match with encapsulating context.
 Parameters:
 - path: (required) The path of the directory to search in (relative to the current workspace directory {workspace_folder}). This directory will be recursively searched.
@@ -247,9 +236,7 @@ Example: Requesting to search for all .ts files in the current directory
 </search_files>
 
 ---
-## list_files
-Score:+15 points for successful use
-Score:-15 points for failed use
+## Tool: list_files
 Description: Request to list files and directories within the specified directory. If recursive is true, it will list all files and directories recursively. If recursive is false or not provided, it will only list the top-level contents. Do not use this tool to confirm the existence of files you may have created, as the user will let you know if the files were created successfully or not.
 Parameters:
 - path: (required) The path of the directory to list contents for (relative to the current workspace directory {workspace_folder})
@@ -268,9 +255,7 @@ Example: Requesting to list all files in the current directory
 
 ---
 
-## list_code_definition_names
-Score:+20 points for successful use
-Score:-20 points for failed use
+## Tool: list_code_definition_names
 Description: Request to list definition names (classes, functions, methods, etc.) from source code. This tool can analyze either a single file or all files at the top level of a specified directory. It provides insights into the codebase structure and important constructs, encapsulating high-level concepts and relationships that are crucial for understanding the overall architecture.
 Parameters:
 - path: (required) The path of the file or directory (relative to the current working directory {workspace_folder}) to analyze. When given a directory, it lists definitions from all top-level source files.
@@ -291,11 +276,8 @@ Examples:
 <path>src/</path>
 </list_code_definition_names>
 
-
 ---
 ## Tool: apply_diff  
-Score:+30 points for successful use
-Score:-30 points for failed use
 Purpose: Modify an existing file by searching for exact content and replacing it with new content.
 
 What this tool does:
@@ -395,9 +377,7 @@ Common mistakes to avoid:
 - Calling apply_diff multiple times for separate changes — batch them in one <apply_diff> block.
 
 ---
-## search_and_replace
-Score:+10 points for successful use
-Score:-10 points for failed use
+## Tool: search_and_replace
 Description: Use this tool to find and replace specific text strings or patterns (using regex) within a file. It's suitable for targeted replacements across multiple locations within the file. Supports literal text and regex patterns, case sensitivity options, and optional line ranges. Shows a diff preview before applying changes.
 
 Required Parameters:
@@ -418,112 +398,95 @@ Notes:
 Examples:
 
 1. Simple text replacement:
-&lt;search_and_replace&gt;
-&lt;path&gt;example.ts&lt;/path&gt;
-&lt;search&gt;oldText&lt;/search&gt;
-&lt;replace&gt;newText&lt;/replace&gt;
-&lt;/search_and_replace&gt;
+<search_and_replace>
+<path>example.ts</path>
+<search>oldText</search>
+<replace>newText</replace>
+</search_and_replace>
 
 2. Case-insensitive regex pattern:
-&lt;search_and_replace&gt;
-&lt;path&gt;example.ts&lt;/path&gt;
-&lt;search&gt;oldw+&lt;/search&gt;
-&lt;replace&gt;new$&amp;&lt;/replace&gt;
-&lt;use_regex&gt;true&lt;/use_regex&gt;
-&lt;ignore_case&gt;true&lt;/ignore_case&gt;
-&lt;/search_and_replace&gt;
-
+<search_and_replace>
+<path>example.ts</path>
+<search>oldw+</search>
+<replace>new$&</replace>
+<use_regex>true</use_regex>
+<ignore_case>true</ignore_case>
+</search_and_replace>
 
 ---
-## execute_command
-Score:+5 for successful use
-Score:-5 for failed use
-Description: Request to execute a CLI command on the system. Use this when you need to perform system operations or run specific commands to accomplish any step in the user's TASKS. You must tailor your command to the user's system and provide a clear explanation of what the command does. For command chaining, use the appropriate chaining syntax for the user's shell. Prefer to execute complex CLI commands over creating executable scripts, as they are more flexible and easier to run. Prefer relative commands and paths that avoid location sensitivity for terminal consistency, e.g: `touch ./testdata/example.file`, `dir ./examples/model1/data/yaml`, or `go test ./cmd/front --config ./cmd/front/config.yml`. If directed by the user, you may open a terminal in a different directory by using the `cwd` parameter.
+## Tool: execute_command
+Description: Request to execute a CLI command on the system. Use this when you need to perform system operations or run specific commands to accomplish any step in the user's task. You must tailor your command to the user's system and provide a clear explanation of what the command does. For command chaining, use the appropriate chaining syntax for the user's shell. Prefer to execute complex CLI commands over creating executable scripts, as they are more flexible and easier to run. Prefer relative commands and paths that avoid location sensitivity for terminal consistency, e.g: `touch ./testdata/example.file`, `dir ./examples/model1/data/yaml`, or `go test ./cmd/front --config ./cmd/front/config.yml`. If directed by the user, you may open a terminal in a different directory by using the `cwd` parameter.
 Parameters:
 - command: (required) The CLI command to execute. This should be valid for the current operating system. Ensure the command is properly formatted and does not contain any harmful instructions.
 - cwd: (optional) The working directory to execute the command in (default: {workspace_folder})
 Usage:
-&lt;execute_command&gt;
-&lt;command&gt;Your command here&lt;/command&gt;
-&lt;cwd&gt;Working directory path (optional)&lt;/cwd&gt;
-&lt;/execute_command&gt;
+<execute_command>
+<command>Your command here</command>
+<cwd>Working directory path (optional)</cwd>
+</execute_command>
 
 Example: Requesting to execute npm run dev
-&lt;execute_command&gt;
-&lt;command&gt;npm run dev&lt;/command&gt;
-&lt;/execute_command&gt;
+<execute_command>
+<command>npm run dev</command>
+</execute_command>
 
 Example: Requesting to execute ls in a specific directory if directed
-&lt;execute_command&gt;
-&lt;command&gt;ls -la&lt;/command&gt;
-&lt;cwd&gt;/home/user/projects&lt;/cwd&gt;
-&lt;/execute_command&gt;
+<execute_command>
+<command>ls -la</command>
+<cwd>/home/user/projects</cwd>
+</execute_command>
 
 ---
-## ask_followup_question
-Score:-10 points each time used
-BEFORE using ask_followup_question:
-1. CHECK "Observations.md" to see if the information you need is already there. If it is, DO NOT use this tool or you will be PUNISHED WITH -20 ADDITIONAL POINTS.
-2. Read the code and find out for yourself and then store the knowledge in Observations.md
-3. If you still can't find what you're looking for, use this tool to ask the user a follow-up question.
-
-Description: Ask the user a question to gather additional information needed to complete the TASKS. This tool should be used when you encounter ambiguities, need clarification, or require more details to proceed effectively. It allows for interactive problem-solving by enabling direct communication with the user. Use this tool judiciously to maintain a balance between gathering necessary information and avoiding excessive back-and-forth.
-After each question, store the information gathered in the "Observations.md" file to keep track of the user's responses and state of the TASKS. 
+## Tool: ask_followup_question
+Description: Ask the user a question to gather additional information needed to complete the task. This tool should be used when you encounter ambiguities, need clarification, or require more details to proceed effectively. It allows for interactive problem-solving by enabling direct communication with the user. Use this tool judiciously to maintain a balance between gathering necessary information and avoiding excessive back-and-forth.
 Parameters:
 - question: (required) The question to ask the user. This should be a clear, specific question that addresses the information you need.
 - follow_up: (required) A list of 2-4 suggested answers that logically follow from the question, ordered by priority or logical sequence. Each suggestion must:
-  1. Be provided in its own &lt;suggest&gt; tag
-  2. Be specific, actionable, and directly related to the completed TASKS
+  1. Be provided in its own <suggest> tag
+  2. Be specific, actionable, and directly related to the completed task
   3. Be a complete answer to the question - the user should not need to provide additional information or fill in any missing details. DO NOT include placeholders with brackets or parentheses.
 Usage:
-&lt;ask_followup_question&gt;
-&lt;question&gt;Your question here&lt;/question&gt;
-&lt;follow_up&gt;
-&lt;suggest&gt;
+<ask_followup_question>
+<question>Your question here</question>
+<follow_up>
+<suggest>
 Your suggested answer here
-&lt;/suggest&gt;
-&lt;/follow_up&gt;
-&lt;/ask_followup_question&gt;
+</suggest>
+</follow_up>
+</ask_followup_question>
 
 Example: Requesting to ask the user for the path to the frontend-config.json file
-&lt;ask_followup_question&gt;
-&lt;question&gt;What is the path to the frontend-config.json file?&lt;/question&gt;
-&lt;follow_up&gt;
-&lt;suggest&gt;./src/frontend-config.json&lt;/suggest&gt;
-&lt;suggest&gt;./config/frontend-config.json&lt;/suggest&gt;
-&lt;suggest&gt;./frontend-config.json&lt;/suggest&gt;
-&lt;/follow_up&gt;
-&lt;/ask_followup_question&gt;
-
+<ask_followup_question>
+<question>What is the path to the frontend-config.json file?</question>
+<follow_up>
+<suggest>./src/frontend-config.json</suggest>
+<suggest>./config/frontend-config.json</suggest>
+<suggest>./frontend-config.json</suggest>
+</follow_up>
+</ask_followup_question>
 
 ---
-## attempt_completion
-Score for successful TASK COMPLETE: +100 points
-Score for failed TASK COMPLETE: -150 points
-Description: After each tool use, the user will respond with the result of that tool use, i.e. if it succeeded or failed, along with any reasons for failure.
-Once you've received the results of tool uses and can confirm that the TASKS is complete, use this tool to present the result of your work to the user.
-Optionally you may provide a CLI command to showcase the result of your work.
-The user may respond with feedback if they are not satisfied with the result, AWARDING YOU WITH 100 POINTS FOR SUCCESSFUL TASK COMPLETE AND PUNISHING YOU WITH -150 POINTS FOR FAILED TASK COMPLETE.
-IMPORTANT NOTE: This tool CANNOT be used until you've confirmed from the user that any previous tool uses were successful.
-Failure to do so will result in code corruption and system failure. Before using this tool, you must ask yourself in  tags if you've confirmed from the user that any previous tool uses were successful. If not, then DO NOT use this tool.
-You will be PUNISHED WITH -200 POINTS FOR USING THIS TOOL WITHOUT CONFIRMATION.
+## Tool: attempt_completion
+Description: After each tool use, the user will respond with the result of that tool use, i.e. if it succeeded or failed, along with any reasons for failure. Once you've received the results of tool uses and can confirm that the task is complete, use this tool to present the result of your work to the user. Optionally you may provide a CLI command to showcase the result of your work. The user may respond with feedback if they are not satisfied with the result, which you can use to make improvements and try again.
+IMPORTANT NOTE: This tool CANNOT be used until you've confirmed from the user that any previous tool uses were successful. Failure to do so will result in code corruption and system failure. Before using this tool, you must ask yourself if you've confirmed from the user that any previous tool uses were successful. If not, then DO NOT use this tool.
+BEFORE USING THIS TOOL, UPDATE "Action_Plan.md" with the completed steps and any additional notes or observations that may help in future tasks.
+
 Parameters:
-- result: (required) The result of the TASKS. Formulate this result in a way that is final and does not require further input from the user. Don't end your result with questions or offers for further assistance.
+- result: (required) The result of the task. Formulate this result in a way that is final and does not require further input from the user. Don't end your result with questions or offers for further assistance.
 - command: (optional) A CLI command to execute to show a live demo of the result to the user. For example, use `open index.html` to display a created html website, or `open localhost:3000` to display a locally running development server. But DO NOT use commands like `echo` or `cat` that merely print text. This command should be valid for the current operating system. Ensure the command is properly formatted and does not contain any harmful instructions.
 Usage:
-&lt;attempt_completion&gt;
-&lt;result&gt;
+<attempt_completion>
+<result>
 Your final result description here
-&lt;/result&gt;
-&lt;command&gt;Command to demonstrate result (optional)&lt;/command&gt;
-&lt;/attempt_completion&gt;
+</result>
+<command>Command to demonstrate result (optional)</command>
+</attempt_completion>
 
 Example: Requesting to attempt completion with a result and command
-&lt;attempt_completion&gt;
-&lt;result&gt;
+<attempt_completion>
+<result>
 I've updated the CSS
-&lt;/result&gt;
-&lt;command&gt;open index.html&lt;/command&gt;
-&lt;/attempt_completion&gt;
-
+</result>
+<command>open index.html</command>
+</attempt_completion>
 ---
