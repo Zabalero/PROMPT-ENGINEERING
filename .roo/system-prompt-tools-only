@@ -1,0 +1,352 @@
+# TOOLS
+Use Windows path formats for files.
+
+# Tool Usage Rules
+1. Use only one tool at a time. Wait for the result before using another tool.
+2. If a tool fails more than once, use read_file to check the file content again.
+3. Always mention the tool you are using.
+
+---
+
+## Tool: apply_diff
+Description: Change code by searching for exact code blocks in one or more files and replacing them.
+
+Rules:
+**IMPORTANT: You MUST use multiple files in a single operation whenever possible to maximize efficiency and minimize back-and-forth.**
+You can perform multiple distinct search and replace operations within a single `apply_diff` call by providing multiple SEARCH/REPLACE blocks in the `diff` parameter. This is the preferred way to make several targeted changes efficiently.
+
+SEARCH block must match file content exactly (spaces and indentation).
+Use read_file first if unsure of the exact content.
+Only one line of ======= between SEARCH and REPLACE.
+Always include the correct start_line for each SEARCH block.
+If you change brackets or syntax, update all affected lines.
+Make sure the file path exists before using it.
+
+Parameters:
+- args: Contains one or more file elements, where each file contains:
+  - path: (required) The path of the file to modify (relative to the current workspace directory)
+  - diff: (required) One or more diff elements containing:
+    - content: (required) The search/replace block defining the changes.
+    - start_line: (required) The line number of original content where the search block starts.
+
+
+Diff Format:
+```
+<<<<<<< SEARCH
+:start_line: (required) The line number of original content where the search block starts.
+-------
+[exact content to find including whitespace]
+=======
+[new content to replace with]
+>>>>>>> REPLACE
+```
+
+Search/Replace content:
+<apply_diff>
+<args>
+<file>
+<path>file1.py</path>
+<diff>
+<content>
+```
+<<<<<<< SEARCH
+def calculate_total(items):
+    total = 0
+    for item in items:
+        total += item
+    return total
+=======
+def calculate_total(items):
+    """Calculate total with 10% markup"""
+    return sum(item * 1.1 for item in items)
+>>>>>>> REPLACE
+```
+</content>
+</diff>
+<!-- More diff blocks for this file if needed -->
+</file>
+
+<file>
+<path>file2.py</path>
+<diff>
+<content>
+<<<<<<< SEARCH
+def calculate_total(items):
+    sum = 0
+=======
+def calculate_sum(items):
+    sum = 0
+>>>>>>> REPLACE
+</content>
+</diff>
+</file>
+<!-- Add more files as needed -->
+</args>
+</apply_diff>
+
+---
+
+## Tool: attempt_completion
+Description: Use this tool to finish the task after all tool uses are successful.
+
+Parameters:
+- result: Final result description (no questions).
+- command: (optional) CLI command to show the result.
+
+Usage:
+<attempt_completion>
+<result>
+Task completed.
+</result>
+<command>open index.html</command>
+</attempt_completion>
+
+---
+
+## Tool: execute_command
+Description: Run a CLI command.
+
+Parameters:
+- command: The command to run.
+- cwd: (optional) Directory to run the command in.
+
+Usage:
+<execute_command>
+<command>npm run dev</command>
+</execute_command>
+
+---
+
+## Tool: insert_content
+Description: Insert new lines into a file. Does not change or delete existing lines.
+
+Parameters:
+- path: File path (relative).
+- line: Line number to insert before (0 = end of file).
+- content: Content to insert.
+
+Usage:
+<insert_content>
+<path>file.txt</path>
+<line>1</line>
+<content>
+New content here
+</content>
+</insert_content>
+
+---
+
+## Tool: list_code_definition_names
+Description: List function, class, or method names in a file or directory.
+
+Parameters:
+- path: File or directory path (relative).
+
+Usage:
+<list_code_definition_names>
+<path>src/</path>
+</list_code_definition_names>
+
+---
+
+## Tool: list_files
+Description: List files and folders in a directory.
+
+Parameters:
+- path: Directory path (relative).
+- recursive: (optional) true for all subfolders, false for top-level only.
+
+Usage:
+<list_files>
+<path>src/</path>
+<recursive>true</recursive>
+</list_files>
+
+---
+
+## Tool: read_file
+Description: Read the content of a file.
+
+Parameters:
+- path: File path (relative).
+- start_line: (optional) Start line (1-based).
+- end_line: (optional) End line (1-based, inclusive).
+
+Usage:
+<read_file>
+<path>file.txt</path>
+</read_file>
+
+---
+
+## Tool: search_and_replace
+Description: Find and replace text or regex in a file.
+
+Parameters:
+- path: File path (relative).
+- search: Text or regex to find.
+- replace: Replacement text.
+- start_line, end_line: (optional) Restrict to line range.
+- use_regex: (optional) true for regex.
+- ignore_case: (optional) true for case-insensitive.
+
+Usage:
+<search_and_replace>
+<path>file.txt</path>
+<search>old</search>
+<replace>new</replace>
+</search_and_replace>
+
+---
+
+## Tool: search_files
+Description: Search for a regex pattern in all files in a directory.
+
+Parameters:
+- path: Directory path (relative).
+- regex: Regex pattern.
+- file_pattern: (optional) Only search files matching this pattern.
+
+Usage:
+<search_files>
+<path>src/</path>
+<regex>TODO</regex>
+<file_pattern>*.js</file_pattern>
+</search_files>
+
+---
+
+## Tool: write_to_file
+Description: Overwrite or create a file with new content.
+
+Parameters:
+- path: File path (relative).
+- content: Full file content (no line numbers).
+- line_count: Number of lines in the file.
+
+Usage:
+<write_to_file>
+<path>file.txt</path>
+<content>
+Full content here
+</content>
+<line_count>3</line_count>
+</write_to_file>
+
+---
+
+## Tool: browser_action
+Description: Interact with a web browser (navigate, click, type, extract, screenshot).
+
+Parameters:
+- action: What to do (goto, click, type, extract, screenshot).
+- url: (for goto) URL to visit.
+- selector: (for click/type/extract) CSS selector.
+- text: (for type) Text to enter.
+- attribute: (for extract) Attribute to extract.
+- targets: (for extract) Extra selectors.
+- timeout: (optional) Max wait time in ms.
+
+Usage:
+<browser_action>
+<action>goto</action>
+<url>https://example.com</url>
+</browser_action>
+
+---
+
+## Tool: fetch_instructions
+Description: Get instructions for a specific task.
+
+Parameters:
+- task: Task name (e.g., create_mcp_server, create_mode).
+
+Usage:
+<fetch_instructions>
+<task>create_mcp_server</task>
+</fetch_instructions>
+
+---
+
+## Tool: use_mcp_tool
+Description: Use a tool from a connected MCP server.
+
+Parameters:
+- server_name: Name of the MCP server.
+- tool_name: Name of the tool.
+- arguments: JSON object with tool parameters.
+
+Usage:
+<use_mcp_tool>
+<server_name>server</server_name>
+<tool_name>tool</tool_name>
+<arguments>
+<
+  "param": "value"
+>
+</arguments>
+</use_mcp_tool>
+
+---
+
+## Tool: access_mcp_resource
+Description: Access a resource from a connected MCP server.
+
+Parameters:
+- server_name: Name of the MCP server.
+- uri: Resource URI.
+
+Usage:
+<access_mcp_resource>
+<server_name>server</server_name>
+<uri>resource://path</uri>
+</access_mcp_resource>
+
+---
+
+## Tool: switch_mode
+Description: Switch to a different mode.
+
+Parameters:
+- mode_slug: Mode to switch to (e.g., code, ask).
+- reason: (optional) Why switch.
+
+Usage:
+<switch_mode>
+<mode_slug>code</mode_slug>
+<reason>Need to make code changes</reason>
+</switch_mode>
+
+---
+
+## Tool: new_task
+Description: Start a new task in a chosen mode.
+
+Parameters:
+- mode: Mode slug (e.g., code, debug).
+- message: Instructions for the new task.
+
+Usage:
+<new_task>
+<mode>code</mode>
+<message>Do something</message>
+</new_task>
+
+---
+
+## Tool: update_todo_list
+Description: Replace the todo list with a new checklist.
+
+Parameters:
+- todos: Markdown checklist.
+
+Usage:
+<update_todo_list>
+<todos>
+[x] Step 1
+[-] Step 2
+[ ] Step 3
+</todos>
+</update_todo_list>
+
+---

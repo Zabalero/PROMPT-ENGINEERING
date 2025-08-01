@@ -1,0 +1,347 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# 001: Cognition Workflow Framework: Tasks, Memory and debug management
+
+**Rule:**
+The agent must proactively create, maintain and update memory and task structures to ensure effective project management and knowledge retention. This rule enforces systematic tracking of tasks, hierarchical decomposition of complex problems, and persistent memory for context and error tracking.
+
+## Cognitive Framework (Ω*)
+
+### Reasoning Principles (Ω)
+- Decompose complex problems into manageable subproblems
+- Apply the appropriate reasoning mode for each task:
+  - **Deductive**: For logical inference and algorithm design
+  - **Analogical**: For pattern reuse and similarity-based solutions
+  - **Exploratory**: For discovery of new approaches
+  - **Procedural**: For implementation of known algorithms
+  - **Contrastive**: For evaluating alternative solutions
+  - **Skeptical**: For testing assumptions and edge cases
+- Challenge overengineering and premature abstractions
+- Detect repetition but avoid premature generalization
+
+### Contradiction Resolution (D⍺)
+- When facing ambiguity or contradictions:
+  1. Identify the exact nature of the contradiction
+  2. Resolve through priority ranking or scope adjustment
+  3. Document the resolution process and reasoning
+  4. Record decisions in `.cursor/memory/insights.md`
+
+### Simplicity Guidelines (Ω.simplicity_guard)
+- Favor simple solutions over complex ones when they meet requirements
+- Delay abstraction until utility is proven through multiple use cases
+- Introduce abstractions only when they reduce overall complexity
+- Record simplification decisions and their rationales
+
+## Project Structure
+```
+.cursor/
+  ├── tasks/                # Task management
+  │   ├── backlog.md        # All pending tasks
+  │   └── sprint_{n}/       # Active sprint folders
+  │       ├── task_{id}.md  # Individual task files
+  │       └── review.md     # Sprint retrospectives
+  ├── memory/               # Persistent knowledge
+  │   ├── rules.md          # Coding patterns and conventions
+  │   ├── insights.md       # Key decisions and rationales
+  │   ├── errors.md         # Error tracking and solutions
+  │   └── reasoning/        # Cognitive process documentation
+  │       └── trace_{id}.md # Decision trace for complex problems
+  ├── config/               # Project configuration
+  │   └── stacks.md         # Tech stack documentation
+  └── index/                # Project indexing
+      └── files.json        # Dynamic file mappings
+```
+
+## Session Initialization Checklist (∑_init)
+At the start of each working session, the agent MUST:
+
+1. **Review Memory Files**:
+   - Check `.cursor/memory/errors.md` for recurring issues and potential patterns
+   - Review `.cursor/memory/insights.md` for recent decisions and context
+   - Consult `.cursor/memory/rules.md` for established conventions
+   - Review `.cursor/index/files.json` to understand current codebase structure
+
+2. **Review Task Status**:
+   - Check `.cursor/tasks/backlog.md` for pending tasks relevant to current work
+   - Review active sprint folders in `.cursor/tasks/sprint_{n}/` for in-progress work
+   - Note the relationships between tasks and current user query
+
+3. **Status Report**:
+   - If context is needed, summarize relevant insights, errors, and task status
+   - Identify any recurring issues that may impact current work
+   - Reference relevant past decisions when making recommendations
+
+4. **Pre-Change Documentation Check**:
+   - Before implementing complex changes, ensure a task or subtask exists
+   - For architectural decisions, create a new insight entry in `.cursor/memory/insights.md`
+   - For recurring issues, update the entry in `.cursor/memory/errors.md`
+
+## To-Do List Management (T)
+- Create a backlog file at `.cursor/tasks/backlog.md` for all identified tasks during conversation
+- For each new task:
+  - Add to backlog with a unique ID, title, description, and priority [`LOW`, `MEDIUM`, `HIGH`]
+  - Format: `[TASK-ID][Priority] Title - Description`
+  - Example: `[TASK-001][HIGH] Implement User Authentication - Create login, registration, and password reset flows`
+  - Include the primary reasoning mode required for the task
+- Review and update the backlog at the end of each working session
+- **Automatic Review**: At the start of each session, review backlog and active sprints for related tasks
+
+## Complex Task Decomposition with Reasoning (Ω_H)
+- Before implementing any complex change, ALWAYS decompose it into a task with substeps
+- Break down any task of medium or high complexity into hierarchical substeps
+- Create a sprint folder for active task groups: `.cursor/tasks/sprint_{n}/`
+- For each complex task:
+  - Create a task file: `.cursor/tasks/sprint_{n}/task_{id}.md`
+  - Identify the primary reasoning mode(s) needed
+  - Break down into atomic substeps with clear completion criteria
+  - Assign status to each substep: `TODO`, `IN_PROGRESS`, `BLOCKED`, `CANCELED`, `DONE`
+  - Assign complexity to each substep: `VERY_LOW`, `LOW`, `MEDIUM`, `HIGH`, `VERY_HIGH`
+  - Add dependencies between substeps when applicable
+  - Record timestamps for task lifecycle metrics (created, started, completed)
+- Example structure:
+  ```markdown
+  # Task: Implement User Authentication
+  
+  **Created**: 2023-11-10T10:00:00Z
+  **Priority**: HIGH
+  **Status**: IN_PROGRESS
+  **Reasoning Mode**: Procedural, Security-focused
+  
+  ## Substep 1: Database Schema Design [DONE]
+  **Created**: 2023-11-10T10:00:00Z
+  **Started**: 2023-11-10T14:00:00Z
+  **Completed**: 2023-11-11T09:30:00Z
+  **Time in Progress**: 19h 30m
+  **Reasoning Mode**: Deductive, Structural
+  
+  - Create users table with appropriate fields
+  - Implement password hashing strategy
+  
+  ## Substep 2: API Endpoints [IN_PROGRESS]
+  **Created**: 2023-11-10T10:00:00Z
+  **Started**: 2023-11-11T10:00:00Z
+  **Time in Backlog**: 24h
+  **Time in Progress**: Ongoing
+  **Reasoning Mode**: Procedural, Security-focused
+  
+  - Create /login endpoint with validation
+  - Create /register endpoint with validation
+  - Create /password-reset endpoints
+  
+  ## Substep 3: Testing [TODO]
+  **Created**: 2023-11-10T10:00:00Z
+  **Time in Backlog**: Ongoing
+  **Reasoning Mode**: Skeptical, Edge-case focused
+  
+  - Write unit tests for auth service
+  - Write integration tests for endpoints
+  - Test edge cases and security vulnerabilities
+  
+  ## Design Decisions
+  - Selected JWT over sessions for stateless architecture (Contrastive reasoning)
+  - Implemented refresh token rotation for enhanced security (Security reasoning)
+  - Simplified password reset flow to reduce user friction (Simplicity principle)
+  ```
+
+## Persistent Memory System (M)
+- Maintain memory records at `.cursor/memory/` to preserve context across sessions
+- Create and update the following memory files:
+  - `.cursor/memory/rules.md`: Document identified coding patterns and conventions
+  - `.cursor/memory/insights.md`: Record key decisions and their rationales
+  - `.cursor/memory/errors.md`: Track encountered errors and their solutions
+  - `.cursor/memory/reasoning/trace_{id}.md`: Document complex reasoning processes
+- Format memory entries with timestamps, categories, tags, and reasoning modes
+- Example:
+  ```markdown
+  ## [2023-10-25] Authentication Pattern
+  **Category**: Security
+  **Tags**: #auth, #security, #jwt
+  **Reasoning Modes**: Contrastive, Security-focused
+  
+  Using JWT for stateless authentication with short expiry tokens (15m) and 
+  longer-lived refresh tokens (7d) stored in HttpOnly cookies.
+  
+  **Reasoning Process**:
+  1. Evaluated sessions vs. JWT (Contrastive reasoning)
+  2. Assessed security implications of token storage (Security reasoning)
+  3. Applied simplicity principle to token refresh mechanism
+  
+  **Rationale**: Balances security and user experience while minimizing database load.
+  ```
+
+## Error Tracking System (Ξ)
+- Automatically track all errors in `.cursor/memory/errors.md`
+- For each error encountered:
+  - Record error type, message, and stack trace (if available)
+  - Document the context in which the error occurred
+  - Identify cognitive process or reasoning mode that led to the error
+  - Track solution or workaround applied
+- For recurring errors (same error occurs 2+ times):
+  - Escalate priority and highlight pattern
+  - Suggest preventative measures (e.g., validation, type checking, tests)
+  - Create a rule draft if pattern is generalizable
+  - Document which reasoning mode should be applied to prevent recurrence
+- Example:
+  ```markdown
+  ## [ERROR-023] TypeError: Cannot read property 'id' of undefined
+  **Occurrences**: 3 (2023-10-22, 2023-10-23, 2023-10-24)
+  **Context**: User profile page when user is not authenticated
+  **Root Cause**: Missing null check before accessing user.id
+  **Reasoning Error**: Incomplete skeptical reasoning - failed to consider null state
+  **Solution**: Added null/undefined check before accessing properties
+  **Prevention**: Implemented input validation middleware for all authenticated routes
+  **Improved Reasoning**: Applied skeptical mode to identify edge cases systematically
+  ```
+
+## Stack Monitoring & Documentation (Φ.snapshot)
+- **Location:** `.cursor/config/stacks.md`  
+- **Behavior:**  
+  - Maintain a list of supported tech stacks (e.g., Node.js, TypeScript)
+  - For each stack component, track:
+    - Version
+    - Key dependencies 
+    - Configuration files
+    - Documentation links
+  - On detecting a stack change (e.g., Node.js → Deno), prompt the user to confirm adding or updating the documentation
+  - Apply contrastive reasoning to evaluate pros/cons of technology choices
+  - Example format:
+    ```markdown
+    ## [Node.js] v16.14.2
+    **Config Files**: package.json, .nvmrc, tsconfig.json
+    **Key Dependencies**: express@4.18.1, prisma@4.3.1, zod@3.19.1
+    **Documentation**: [Node.js Docs](mdc:https:/nodejs.org/docs/v16.14.2/api)
+    **Last Updated**: 2023-11-15
+    **Reasoning**: Selected for compatibility with existing tooling and team expertise
+    ```
+
+## Dynamic File-Scope Index (Λ.pattern_alignment)
+- **Location:** `.cursor/index/files.json`  
+- **Behavior:**  
+  - Auto-generate a JSON index mapping:  
+    - API routes → file paths  
+    - Key packages (jwt, zod, etc.) → import locations
+    - Component definitions → file locations  
+  - Update on file creation, renaming, or deletion
+  - Example structure:
+    ```json
+    {
+      "api_routes": {
+        "/api/users": "src/routes/users.ts",
+        "/api/auth/login": "src/routes/auth.ts"
+      },
+      "imports": {
+        "jwt": ["src/utils/auth.ts", "src/middleware/protect.ts"],
+        "zod": ["src/schemas/user.ts", "src/validators/input.ts"]
+      },
+      "components": {
+        "UserProfile": "src/components/UserProfile.tsx",
+        "LoginForm": "src/components/auth/LoginForm.tsx"
+      }
+    }
+    ```
+
+## Comprehensive Activation Triggers (Σ_hooks)
+- **Reasoning Mode Selection**:
+  - Task complexity exceeds LOW
+  - Problem involves multiple possible approaches
+  - Edge cases or security concerns are present
+  - Architectural decisions are being made
+
+- **Contradiction Resolution**:
+  - Conflicting requirements detected
+  - Ambiguity in specifications
+  - Competing implementation approaches
+  - Inconsistent assumptions identified
+
+- **Simplicity Enforcement**:
+  - Solution seems unnecessarily complex
+  - Abstractions are proposed with < 3 use cases
+  - Code is becoming difficult to follow
+  - Duplicated code with minor variations
+
+- **Backlog & Task Creation**: 
+  - Explicit request for task creation
+  - Complex feature request
+  - Planning discussion
+  - Detection of codebase changes affecting planned work
+  
+- **Task Decomposition**:
+  - Task has 3+ distinct components
+  - Task involves multiple systems or technologies
+  - Task estimated to take 4+ hours
+  - **IMPORTANT**: ANY change to core architecture, database schema, or security features
+  
+- **Memory Updates**:
+  - New pattern or convention identified
+  - Significant design decision made
+  - Error encountered and resolved
+  - End of working session
+  
+- **Error Tracking**:
+  - When asked to check, fix, or refactor and issue during conversation
+  - Any runtime or logic error
+  - Compilation failure
+  - Test failure
+  - Performance issue
+
+- **Stack Monitoring**:
+  - Detection of new dependencies in package.json or similar files
+  - Framework or library version changes
+  - Addition of new configuration files
+
+- **File Index Updates**:
+  - Creation, deletion, or renaming of files
+  - Addition of new API routes or components
+  - Import statement changes that affect the dependency graph
+
+- **Task Metrics Recording**:
+  - Status changes in substeps (TODO → IN_PROGRESS → DONE)
+  - Addition of new substeps
+  - Completion of a task or sprint
+
+**Pre-Change Documentation Requirements**:
+- **BEFORE** making complex changes, the agent MUST:
+  1. Create or update a task in the backlog for tracking
+  2. For architectural decisions, create an entry in insights.md
+  3. For refactoring, document the approach and reasoning
+  4. For new features, ensure there's a clear task with substeps
+  5. For bug fixes, update the error tracking with resolution
+
+**Rationale:**
+- Improves project organization and visibility
+- Reduces cognitive load through systematic decomposition of complex problems
+- Preserves context and knowledge across sessions
+- Enables pattern recognition and proactive error prevention
+- Facilitates continuous improvement through learning from past challenges
+- Provides metrics for tracking progress and identifying bottlenecks
+- Maintains awareness of technology stack changes
+- Creates dynamic indexing for faster navigation and context retrieval
+- Ensures consistent application of appropriate reasoning modes
+- Provides structured approach to resolving contradictions
+- Enforces simplicity and prevents unnecessary complexity
+
+**How to apply:**
+- The agent will select appropriate reasoning modes for each task and document the selection
+- The agent will follow structured contradiction resolution when facing ambiguity
+- The agent will enforce simplicity guidelines and challenge unnecessary complexity
+- The agent will proactively create and update task structures
+- The agent will automatically review the backlog and substeps at the start of each session
+- The agent will reference relevant memory entries when providing solutions
+- The agent will track task progress and suggest next steps based on the current state
+- The agent will monitor stack changes and suggest updates to the stack documentation
+- The agent will maintain the file index and use it for faster context retrieval
+- The agent will record timestamps for task status changes to enable metrics tracking
+- The agent will alert to recurring errors and suggest structural improvements
+
+**Integration Notes:**  
+- Implement these capabilities incrementally, focusing on highest value features first
+- Ensure all updates are reflected in `.cursor/memory/rules.md`
+- Keep automation lightweight to avoid editor lag
+- Document reasoning processes for complex decisions
+- Track which reasoning modes are most effective for different types of tasks
+
+**See also:**
+- [cognition.mdc](mdc:.cursor/rules/cognition.mdc)

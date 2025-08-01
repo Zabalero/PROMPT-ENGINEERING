@@ -1,12 +1,10 @@
-//FEDE NOTES
-// Just the tools
-
-
 # TOOLS
+Use Windows path formats for files
 
 # Tools usage rules
 1. ONCE YOU USE A TOOL, YOU CANNOT USE A TOOL AGAIN UNTIL YOU RECEIVE THE RESULT OF THE PREVIOUS TOOL USE.
-2. Every time you're going to use a tool mention it
+2. CONSECUTIVE FAILED TOOL USES: READ THE RELATED FILES AGAIN
+3. Every time you're going to use a tool mention it
 
 ---
 ## Tool: apply_diff  
