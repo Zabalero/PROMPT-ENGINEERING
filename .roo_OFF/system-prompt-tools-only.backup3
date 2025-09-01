@@ -1,0 +1,349 @@
+# TOOLS (v20250805)
+Use Windows path formats for files.
+
+# Usage Rules
+1. Use only one tool at a time. Wait for the result before using another tool.
+2. If a tool fails more than once, use read_file to check the file content again.
+3. Use attempt_completion when you just need to return an answer.
+
+---
+
+## Tool: apply_diff
+Description: Make surgical edits by replacing exact code blocks in files.
+apply_diff rules:
+Use multiple files/blocks per operation when possible.
+You can perform multiple distinct search and replace operations within a single `apply_diff` call by providing multiple SEARCH/REPLACE blocks in the `diff` parameter. This is the preferred way to make several targeted changes efficiently.
+
+SEARCH block must match file content exactly (spaces and indentation).
+Use read_file first if unsure of the exact content.
+Only one line of ======= between SEARCH and REPLACE.
+Always include the correct start_line for each SEARCH block.
+
+Parameters:
+- args: One or more file elements with:
+  - path: File path (relative to current workspace directory)
+  - diff: One or more diff elements with:
+    - start_line: (required) The line number of original content where the search block starts.
+    - content: Search/replace block (include start_line in content)
+
+Diff Format:
+<<<<<<< SEARCH
+:start_line: [line number]
+[exact content to find]
+=======
+[new content]
+>>>>>>>REPLACE
+
+Example:
+<apply_diff>
+<args>
+<file>
+<path>file1.py</path>
+<diff>
+<content>
+<<<<<<< SEARCH
+:start_line: 1
+-------
+def calculate():
+    return 0
+=======
+def calculate():
+    return 1
+>>>>>>> REPLACE
+</content>
+</diff>
+<!-- More diff blocks for this file if needed -->
+</file>
+<file>
+<path>file2.py</path>
+<diff>
+<content>
+<<<<<<< SEARCH
+def calculate_total(items):
+    sum = 0
+=======
+def calculate_sum(items):
+    sum = 0
+>>>>>>> REPLACE
+</content>
+</diff>
+</file>
+<!-- Add more files as needed -->
+</args>
+</apply_diff>
+
+---
+
+## Tool: attempt_completion
+Description: Finalize task after confirming all tools succeeded.
+
+Parameters:
+- result: Final result description (no questions)
+- command: (optional) CLI command to show result
+
+Usage:
+<attempt_completion>
+<result>Task completed</result>
+<command>npm start</command>
+</attempt_completion>
+
+---
+
+## Tool: execute_command
+Description: Run CLI command.
+
+Parameters:
+- command: Command to execute
+- cwd: (optional) Working directory
+
+Usage:
+<execute_command>
+<command>npm install</command>
+<cwd>./project</cwd>
+</execute_command>
+
+---
+
+## Tool: insert_content
+Description: Insert new lines without modifying existing content.
+
+Parameters:
+- path: File path
+- line: Insert before this line (0 = end of file)
+- content: Content to insert
+
+Usage:
+<insert_content>
+<path>file.js</path>
+<line>5</line>
+<content>console.log('test');</content>
+</insert_content>
+
+---
+
+## Tool: list_code_definition_names
+Description: List function/class names in file/directory.
+
+Parameters:
+- path: File/directory path
+
+Usage:
+<list_code_definition_names>
+<path>src/</path>
+</list_code_definition_names>
+
+---
+
+## Tool: list_files
+Description: List files/folders in directory.
+
+Parameters:
+- path: Directory path
+- recursive: (optional) true for subfolders
+
+Usage:
+<list_files>
+<path>src/</path>
+<recursive>true</recursive>
+</list_files>
+
+---
+
+## Tool: read_file
+Description: Read file content. Max 15 files per request.
+
+Parameters:
+- args: One or more file elements with:
+  - path: File path
+  - start_line: (optional)
+  - end_line: (optional)
+
+Usage:
+<read_file>
+<args>
+<file><path>file1.txt</path></file>
+<file><path>file2.txt</path></file>
+</args>
+</read_file>
+
+---
+
+## Tool: search_and_replace
+Description: Find/replace text or regex in file.
+
+Parameters:
+- path: File path
+- search: Text/regex to find
+- replace: Replacement text
+- start_line/end_line: (optional) Line range
+- use_regex: (optional) true for regex
+- ignore_case: (optional) true for case-insensitive
+
+Usage:
+<search_and_replace>
+<path>file.txt</path>
+<search>old</search>
+<replace>new</replace>
+<use_regex>true</use_regex>
+</search_and_replace>
+
+---
+
+## Tool: search_files
+Description: Search for regex pattern in directory files.
+
+Parameters:
+- path: Directory path
+- regex: Pattern to search
+- file_pattern: (optional) File filter
+
+Usage:
+<search_files>
+<path>src/</path>
+<regex>TODO</regex>
+<file_pattern>*.js</file_pattern>
+</search_files>
+
+---
+
+## Tool: write_to_file
+Description: Overwrite/create file with new content.
+
+Parameters:
+- path: File path
+- content: Complete file content
+- line_count: Number of lines
+
+Usage:
+<write_to_file>
+<path>config.json</path>
+<content>{"key": "value"}</content>
+<line_count>1</line_count>
+</write_to_file>
+
+---
+
+## Tool: browser_action
+Description: Interact with web browser.
+
+Parameters:
+- action: launch/click/type/scroll_down/scroll_up/close
+- url: (for launch) URL to visit
+- coordinate: (for click) x,y position
+- text: (for type) Text to enter
+
+Usage:
+<browser_action>
+<action>launch</action>
+<url>http://localhost:3000</url>
+</browser_action>
+
+---
+
+## Tool: ask_followup_question
+Description: Ask user for additional information.
+
+Parameters:
+- question: Question to ask
+- follow_up: 2-4 suggested answers in <suggest> tags
+
+Usage:
+<ask_followup_question>
+<question>Where is config file?</question>
+<follow_up>
+<suggest>./src/config.json</suggest>
+<suggest>./config.json</suggest>
+</follow_up>
+</ask_followup_question>
+
+---
+
+## Tool: fetch_instructions
+Description: Get task instructions.
+
+Parameters:
+- task: Task name (create_mcp_server, create_mode)
+
+Usage:
+<fetch_instructions>
+<task>create_mcp_server</task>
+</fetch_instructions>
+
+---
+
+## Tool: use_mcp_tool
+Description: Use tool from MCP server.
+
+Parameters:
+- server_name: MCP server name
+- tool_name: Tool name
+- arguments: JSON parameters
+
+Usage:
+<use_mcp_tool>
+<server_name>server</server_name>
+<tool_name>tool</tool_name>
+<arguments>{"param":"value"}</arguments>
+</use_mcp_tool>
+
+---
+
+## Tool: access_mcp_resource
+Description: Access resource from MCP server.
+
+Parameters:
+- server_name: MCP server name
+- uri: Resource URI
+
+Usage:
+<access_mcp_resource>
+<server_name>server</server_name>
+<uri>resource://path</uri>
+</access_mcp_resource>
+
+---
+
+## Tool: switch_mode
+Description: Switch to different mode.
+
+Parameters:
+- mode_slug: Mode to switch to (research, innovate, plan, execute, review)
+- reason: (optional) Why switch
+
+Usage:
+<switch_mode>
+<mode_slug>code</mode_slug>
+<reason>Make code changes</reason>
+</switch_mode>
+
+---
+
+## Tool: new_task
+Description: Start new task in chosen mode.
+
+Parameters:
+- mode: Mode slug (research, innovate, plan, execute, review)
+- message: Task instructions
+
+Usage:
+<new_task>
+<mode>execute</mode>
+<message>Implement feature</message>
+</new_task>
+
+---
+
+## Tool: update_todo_list
+Description: Replace todo list with new checklist.
+
+Parameters:
+- todos: Markdown checklist ([x], [-], [ ])
+
+Usage:
+<update_todo_list>
+<todos>
+[x] Completed task
+[-] In progress
+[ ] Pending
+</todos>
+</update_todo_list>

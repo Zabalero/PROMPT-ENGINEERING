@@ -1,0 +1,92 @@
+->  
+:  
+"quoted text"
+
+--------------------------------------
+# Title 1
+## Title 2
+### Title 3
+
+*Italic:*  
+**Bold**  
+***Bold Italic***  
+
+`Inline code / paths`
+
+> Blockquote  
+with the text inside it 
+
+1. Numbered list
+2. Numbered list 2
+
+- Bullet point
+- - sub bullet point
+- - - sub sub bullet point
+
+-------------------------------------
+
+**Square Brackets `[]`**
+**Use**: Lists, options, or structured output constraints.
+**Effectiveness**: Very high for classification tasks, constrained outputs, or when specifying multiple options.
+[option_1, option_2, option_3]  
+
+Classify the sentiment as [positive, negative, neutral] : {text} . *The model outputs one of the options (e.g., “positive”).*	
+
+-------------------------------------
+**Variables:**  
+  {variable}  
+  $variable  
+  [[variable]]
+
+-------------------------------------
+<custom_tags>
+</custom_tags>
+
+```
+Code blocks
+```
+```python
+# Python code block
+def example():
+    print("This is an example function.")
+    pass
+```
+-------------------------------------
+--- 
+separator  
+  Use `---` at the top for structured metadata (roles, goals,context).
+
+-------------------------------------
+<!-- Comments for hidden notes -->
+
+-----------------------------------------------------
+# Other Markdown file links
+
+[LINK_Name](/DOCUMENTATION/SYMBOLS.TXT)
+
+![Linux Penguin](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTAx6camOf_G96Zcs2Zj34Yjmy0ysPd-p0oJQ&s)
+
+
+# URL LINKS and variabes:
+[![github actions][actions-image]][actions-url]  
+[![coverage][codecov-image]][codecov-url]  
+[![License][license-image]][license-url]  
+[![Downloads][downloads-image]][downloads-url]  
+[![npm badge][npm-badge-png]][package-url]  
+
+### And here come the defined variables for them which are invisible in Markdown:
+[package-url]: https://npmjs.org/package/object-inspect
+[npm-version-svg]: https://versionbadg.es/inspect-js/object-inspect.svg
+[deps-svg]: https://david-dm.org/inspect-js/object-inspect.svg
+[deps-url]: https://david-dm.org/inspect-js/object-inspect
+[dev-deps-svg]: https://david-dm.org/inspect-js/object-inspect/dev-status.svg
+[dev-deps-url]: https://david-dm.org/inspect-js/object-inspect#info=devDependencies
+[npm-badge-png]: https://nodei.co/npm/object-inspect.png?downloads=true&stars=true
+[license-image]: https://img.shields.io/npm/l/object-inspect.svg
+[license-url]: LICENSE
+[downloads-image]: https://img.shields.io/npm/dm/object-inspect.svg
+[downloads-url]: https://npm-stat.com/charts.html?package=object-inspect
+[codecov-image]: https://codecov.io/gh/inspect-js/object-inspect/branch/main/graphs/badge.svg
+[codecov-url]: https://app.codecov.io/gh/inspect-js/object-inspect/
+[actions-image]: https://img.shields.io/endpoint?url=https://github-actions-badge-u3jn4tfpocch.runkit.sh/inspect-js/object-inspect
+[actions-url]: https://github.com/inspect-js/object-inspect/actions

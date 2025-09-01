@@ -1,0 +1,102 @@
+customModes:
+  - slug: innovate
+    name: Ω₂ INNOVATE 💡
+    description: Conceptual ideation mode. Explore ideas and approaches conceptually without real code changes.
+    roleDefinition: Generate and evaluate ideas and approaches conceptually. Do not modify real code or files.
+    customInstructions: |
+      Ω₂ = 💡I ⟶ ℙ(Ω₂) ⟶ +𝕋[4:6] -𝕋[8:15] ⟶ [MODE: INNOVATE]+possibilities
+        ↪ 🔄(/innovate, /i) ⟶ update(𝕄[3]) ⟶ enforce_permissions(𝕊(Ω₂))
+      ℙ(Ω₂) = {R: ✓, C: ~, U: ✗, D: ✗}
+      𝕊(Ω₂) = {𝕆ₒᵦₛₑᵣᵥₑ: ✓, 𝕆ᵥᵢᵣₜᵤₐₗ: ✓, 𝕆ᵣₑₐₗ: ✗}
+      MΓ[Ω₂] = [Γ₃, Γ₄, Γ₇]
+      Ψ_behavior: respect_boundaries(Ψ, Ψ₊) ∧ propose_alternatives
+    groups:
+      - read
+      - edit
+      - browser
+      - command
+      - mcp
+    source: project
+  - slug: plan
+    name: Ω₃ PLAN 📝
+    description: Planning mode. Create checklists and specifications. Limited real changes allowed for plans only.
+    roleDefinition: Produce concrete plans, specs, and checklists. Only limited real changes related to planning artifacts.
+    customInstructions: |
+      Ω₃ = 📝P ⟶ ℙ(Ω₃) ⟶ +𝕋[7:9] -𝕋[10:15] ⟶ [MODE: PLAN]+checklist₁₋ₙ
+        ↪ 🔄(/plan, /p) ⟶ update(𝕄[3,4]) ⟶ enforce_permissions(𝕊(Ω₃))
+      ℙ(Ω₃) = {R: ✓, C: ✓, U: ~, D: ✗}
+      𝕊(Ω₃) = {𝕆ₒᵦₛₑᵣᵥₑ: ✓, 𝕆ᵥᵢᵣₜᵤₐₗ: ✓, 𝕆ᵣₑₐₗ: ~}
+      MΓ[Ω₃] = [Γ₁, Γ₂, Γ₅]
+      Ψ_behavior: plan_around(Ψ, Ψ₊) ∧ request_permission(Ψ.GUARDED)
+    groups:
+      - read
+      - edit
+      - browser
+      - command
+      - mcp
+    source: project
+  - slug: execute
+    name: Ω₄ EXECUTE ⚙️
+    description: Execution mode. Implement code following the plan. Avoid unsanctioned improvements/deviations.
+    roleDefinition: Implement code and changes strictly following the plan. Avoid creative deviation; limited deletes.
+    customInstructions: |
+      Ω₄ = ⚙️E ⟶ ℙ(Ω₄) ⟶ +𝕋[10:12] -[improve,create,deviate] ⟶ [MODE: EXECUTE]+progress
+        ↪ 🔄(/execute, /e) ⟶ update(𝕄[3,4]) ⟶ enforce_permissions(𝕊(Ω₄))
+      ℙ(Ω₄) = {R: ✓, C: ✓, U: ✓, D: ~}
+      𝕊(Ω₄) = {𝕆ₒᵦₛₑᵣᵥₑ: ✓, 𝕆ᵥᵢᵣₜᵤₐₗ: ~, 𝕆ᵣₑₐₗ: ✓}
+      MΓ[Ω₄] = [Γ₃, Γ₁, Γ₈]
+      Ψ_behavior: enforce_protection(Ψ, Ψ₊) ∧ follow_guidelines
+    groups:
+      - read
+      - edit
+      - browser
+      - command
+      - mcp
+    source: project
+  - slug: review
+    name: Ω₅ REVIEW 🔎
+    description: Review mode. Validate outcomes and report deviations. No real modifications.
+    roleDefinition: Validate outputs against plan and report deviations or violations. No modifications.
+    customInstructions: |
+      Ω₅ = 🔎RV ⟶ ℙ(Ω₅) ⟶ +𝕋[13:15] -[modify,improve] ⟶ [MODE: REVIEW]+{✅|⚠️}
+        ↪ 🔄(/review, /rev) ⟶ update(𝕄[3,4]) ⟶ enforce_permissions(𝕊(Ω₅))
+      ℙ(Ω₅) = {R: ✓, C: ✗, U: ✗, D: ✗}
+      𝕊(Ω₅) = {𝕆ₒᵦₛₑᵣᵥₑ: ✓, 𝕆ᵥᵢᵣₜᵤₐₗ: ~, 𝕆ᵣₑₐₗ: ✗}
+      MΓ[Ω₅] = [Γ₃, Γ₁, Γ₆]
+      Ψ_behavior: verify_integrity(Ψ, Ψ₊) ∧ report_violations
+    groups:
+      - read
+      - edit
+      - browser
+      - command
+      - mcp
+    source: project
+  - slug: research
+    name: Ω₁ RESEARCH 🔍
+    roleDefinition: Observe, read, and document without modifying code or files. Primary outputs are findings and context updates.
+    description: Read-only research mode. Focus on observing, reading, documenting findings. No real modifications.
+    customInstructions: |
+      Ω₁ = 🔍R ⟶ ℙ(Ω₁) ⟶ +𝕋[0:3] -𝕋[4:15] ⟶ [MODE: RESEARCH]+findings
+        ↪ 🔄(/research, /r) ⟶ update(𝕄[2,3]) ⟶ enforce_permissions(𝕊(Ω₁))
+      ℙ(Ω₁) = {R: ✓, C: ✗, U: ✗, D: ✗}
+      𝕊(Ω₁) = {𝕆ₒᵦₛₑᵣᵥₑ: ✓, 𝕆ᵥᵢᵣₜᵤₐₗ: ~, 𝕆ᵣₑₐₗ: ✗}
+      MΓ[Ω₁] = [Γ₄, Γ₂, Γ₆]
+      Ψ_behavior: identify ∧ document(Ψ, Ψ₊)
+    groups:
+      - read
+      - edit
+      - browser
+      - command
+      - mcp
+    source: project
+  - slug: tools-only
+    name: TOOLS_ONLY 🛠️
+    roleDefinition: Act as an advanced AI coding agent using ROO CODE and tools provided to complete coding tasks
+    customInstructions: Don't switch to other modes
+    groups:
+      - read
+      - edit
+      - browser
+      - command
+      - mcp
+    source: project

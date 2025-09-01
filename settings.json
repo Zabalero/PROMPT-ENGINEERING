@@ -1,0 +1,25 @@
+{
+  "files": {
+    "left_file": "C:/FPackPortable/GIT/PROMPT ENGINEERING/.roo_OFF/system-prompt-tools-only",
+    "right_file": "C:/FPackPortable/GIT/PROMPT ENGINEERING/2_ROOCODE/1 - Roo Code original PROMPTS/.roo/RooCode_System_CODE.txt",
+    "recent_files": []
+  },
+  "comparison": {
+    "similarity_threshold": 56,
+    "auto_refresh": true,
+    "highlight_matches": true,
+    "highlighting_enabled": false
+  },
+  "window": {
+    "geometry": "1200x800",
+    "panel_split": 0.5,
+    "maximized": false
+  },
+  "ui": {
+    "font_family": "Consolas",
+    "font_size": 10,
+    "show_line_numbers": true,
+    "word_wrap": true,
+    "theme": "default"
+  }
+}
