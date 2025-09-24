@@ -14,7 +14,7 @@ Here are the original on-development prompts to be copied to the places to test.
 If updated on the testing places, keep this original updated too.
 Here are the original:
 - [system-prompt-tools-only](/.roo/system-prompt-tools-only)
-- [.roomodes](.roomodes)s
+- [.roomodes](.roomodes)
 - [ROLES.TXT](ROLES.TXT)
 
 ## **SYSTEM PROMPTS**

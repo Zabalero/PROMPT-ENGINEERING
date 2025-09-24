@@ -1,23 +1,26 @@
-# TOOLS (v20250805)
+# TOOLS (v20250902)
 Use Windows path formats for files.
 
 # Usage Rules
 1. Use only one tool at a time. Wait for the result before using another tool.
 2. If a tool fails more than once, use read_file to check the file content again.
 3. Use attempt_completion when you just need to return an answer.
-
+4. When the task is big:
+  a. Break it down into smaller steps
+  b. Create a ToDo list with update_todo_list tool and the smaller steps.
 ---
 
 ## Tool: apply_diff
-Description: Make surgical edits by replacing exact code blocks in files.
+Description: Change code by searching for exact code blocks in one or more files and replacing them.
 apply_diff rules:
-Use multiple files/blocks per operation when possible.
 You can perform multiple distinct search and replace operations within a single `apply_diff` call by providing multiple SEARCH/REPLACE blocks in the `diff` parameter. This is the preferred way to make several targeted changes efficiently.
+Use multiple files/blocks per operation when possible.
 
 SEARCH block must match file content exactly (spaces and indentation).
-Use read_file first if unsure of the exact content.
+Use read_file first if unsure of content.
 Only one line of ======= between SEARCH and REPLACE.
 Always include the correct start_line for each SEARCH block.
+Each diff block requires its own start_line and content.
 
 Parameters:
 - args: One or more file elements with:
@@ -27,55 +30,73 @@ Parameters:
     - content: Search/replace block (include start_line in content)
 
 Diff Format:
+```
 <<<<<<< SEARCH
 :start_line: [line number]
 [exact content to find]
 =======
 [new content]
->>>>>>>REPLACE
+>>>>>>> REPLACE
+```
 
-Example:
+Usage Example (multiple changes across multiple files):
+```
 <apply_diff>
 <args>
 <file>
-<path>file1.py</path>
-<diff>
-<content>
+  <path>file1.py</path>
+  <diff>
+    <content><![CDATA[
 <<<<<<< SEARCH
-:start_line: 1
+:start_line: 10
 -------
-def calculate():
-    return 0
-=======
-def calculate():
-    return 1
->>>>>>> REPLACE
-</content>
-</diff>
-<!-- More diff blocks for this file if needed -->
-</file>
-<file>
-<path>file2.py</path>
-<diff>
-<content>
-<<<<<<< SEARCH
 def calculate_total(items):
     sum = 0
 =======
 def calculate_sum(items):
     sum = 0
 >>>>>>> REPLACE
-</content>
-</diff>
+]]></content>
+  </diff>
+  <diff>
+    <content><![CDATA[
+<<<<<<< SEARCH
+:start_line: 15
+-------
+        total += item
+    return total
+=======
+        sum += item
+    return sum 
+>>>>>>> REPLACE
+]]></content>
+  </diff>
 </file>
-<!-- Add more files as needed -->
+<file>
+  <path>file2.py</path>
+  <diff>
+    <content><![CDATA[
+<<<<<<< SEARCH
+:start_line: 5
+-------
+def greet(name):
+    return "Hello " + name
+=======
+def greet(name):
+    return f"Hello {name}!"
+>>>>>>> REPLACE
+]]></content>
+  </diff>
+</file>
 </args>
 </apply_diff>
+```
 
 ---
 
 ## Tool: attempt_completion
-Description: Finalize task after confirming all tools succeeded.
+Description: Finalize task after confirming all tools succeeded and the user request is completed.
+Can be also used to give an answer to the user but only if there are no pending tasks or things to do.
 
 Parameters:
 - result: Final result description (no questions)
@@ -99,7 +120,7 @@ Parameters:
 Usage:
 <execute_command>
 <command>npm install</command>
-<cwd>./project</cwd>
+<cwd>Working directory path (optional)</cwd>
 </execute_command>
 
 ---
@@ -122,15 +143,22 @@ Usage:
 ---
 
 ## Tool: list_code_definition_names
-Description: List function/class names in file/directory.
+Description: Request to list definition names (classes, functions, methods, etc.) from source code. This tool can analyze either a single file or all files at the top level of a specified directory. It provides insights into the codebase structure and important constructs, encapsulating high-level concepts and relationships that are crucial for understanding the overall architecture.
 
 Parameters:
 - path: File/directory path
 
 Usage:
+1. List definitions from a file:
+<list_code_definition_names>
+<path>src/main.ts</path>
+</list_code_definition_names>
+
+2. List definitions from all files in a directory:
 <list_code_definition_names>
 <path>src/</path>
 </list_code_definition_names>
+
 
 ---
 
@@ -139,7 +167,7 @@ Description: List files/folders in directory.
 
 Parameters:
 - path: Directory path
-- recursive: (optional) true for subfolders
+- <recursive>true or false (optional)</recursive>
 
 Usage:
 <list_files>
@@ -151,12 +179,13 @@ Usage:
 
 ## Tool: read_file
 Description: Read file content. Max 15 files per request.
+IMPORTANT: You MUST use this Efficient Reading Strategy:
+- You MUST read all related files and implementations together in a single operation.
+- You MUST obtain all necessary context before proceeding with changes
 
 Parameters:
 - args: One or more file elements with:
   - path: File path
-  - start_line: (optional)
-  - end_line: (optional)
 
 Usage:
 <read_file>
@@ -194,14 +223,15 @@ Description: Search for regex pattern in directory files.
 
 Parameters:
 - path: Directory path
-- regex: Pattern to search
-- file_pattern: (optional) File filter
+- regex: (required) The regular expression pattern to search for. Uses Rust regex syntax.
+- file_pattern: (optional) Glob pattern to filter files (e.g., '*.ts' for TypeScript files). If not provided, it will search all files (*).
 
 Usage:
+Example search for all .ts files in the current directory
 <search_files>
-<path>src/</path>
-<regex>TODO</regex>
-<file_pattern>*.js</file_pattern>
+<path>.</path>
+<regex>.*</regex>
+<file_pattern>*.ts</file_pattern>
 </search_files>
 
 ---
@@ -244,8 +274,8 @@ Usage:
 Description: Ask user for additional information.
 
 Parameters:
-- question: Question to ask
-- follow_up: 2-4 suggested answers in <suggest> tags
+- question:(required) Question to ask
+- follow_up:(required) 2-4 suggested answers in <suggest> tags
 
 Usage:
 <ask_followup_question>
@@ -322,12 +352,12 @@ Usage:
 Description: Start new task in chosen mode.
 
 Parameters:
-- mode: Mode slug (research, innovate, plan, execute, review)
+- mode: Mode slug of your choice
 - message: Task instructions
 
 Usage:
 <new_task>
-<mode>execute</mode>
+<mode>model-slug-name</mode>
 <message>Implement feature</message>
 </new_task>
 
@@ -335,6 +365,7 @@ Usage:
 
 ## Tool: update_todo_list
 Description: Replace todo list with new checklist.
+Use this tool when the task is complex and needs to be broken down in smaller sub-tasks.
 
 Parameters:
 - todos: Markdown checklist ([x], [-], [ ])

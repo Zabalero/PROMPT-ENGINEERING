@@ -115,7 +115,7 @@ M.retrieval = dynamic reference resolution(τ)
 **Λ = Rule-Based Learning ⇌ Adaptive Heuristics Expansion**
 
 ```mathematical
-Λ.rules_path = ".cursor/rules/"
+Λ.rules_path = ".roo/rules/"
 Λ.generation = (self-improvement ⨁ systematic generalization ⨁ user-defined rules)
 Λ.trigger_conditions = (
     τ ∈ (knowledge gap, error resolution, pattern recognition, user directive)
@@ -448,7 +448,7 @@ weights = adaptive_prioritization(task_complexity, high-complexity_bias=True)
 **1. Setup Requirements**
 - Create `.memory/` directory for persistent storage
 - Create `.tasks/` directory for task management
-- Create `.cursor/rules/` directory for rule management
+- Create `.roo/rules/` directory for rule management
 - Initialize error tracking system
 
 **2. Mode Declaration**
