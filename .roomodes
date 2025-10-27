@@ -1,4 +1,15 @@
 customModes:
+  - slug: tools-only
+    name: TOOLS_ONLY 🛠️
+    roleDefinition: Act as an advanced AI coding agent using ROO CODE and tools provided to complete coding tasks
+    customInstructions: Don't switch to other modes
+    groups:
+      - read
+      - edit
+      - browser
+      - command
+      - mcp
+    source: project
   - slug: innovate
     name: Ω₂ INNOVATE 💡
     description: Conceptual ideation mode. Explore ideas and approaches conceptually without real code changes.
@@ -82,17 +93,6 @@ customModes:
       𝕊(Ω₁) = {𝕆ₒᵦₛₑᵣᵥₑ: ✓, 𝕆ᵥᵢᵣₜᵤₐₗ: ~, 𝕆ᵣₑₐₗ: ✗}
       MΓ[Ω₁] = [Γ₄, Γ₂, Γ₆]
       Ψ_behavior: identify ∧ document(Ψ, Ψ₊)
-    groups:
-      - read
-      - edit
-      - browser
-      - command
-      - mcp
-    source: project
-  - slug: tools-only
-    name: TOOLS_ONLY 🛠️
-    roleDefinition: Act as an advanced AI coding agent using ROO CODE and tools provided to complete coding tasks
-    customInstructions: Don't switch to other modes
     groups:
       - read
       - edit
