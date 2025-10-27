@@ -1,0 +1,3 @@
+[submodule "MY_DOCUMENTATION"]
+	path = MY_DOCUMENTATION
+	url = https://github.com/Zabalero/MY_DOCUMENTATION.git
