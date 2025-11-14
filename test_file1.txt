@@ -1,2 +1,0 @@
-This is a modified brief random text for testing purposes in file one.
-Added line with modification.
